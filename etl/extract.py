@@ -7,6 +7,38 @@ from urllib.parse import urljoin
 from playwright.sync_api import sync_playwright
 import os
 
+def extract_seller_location(detail_page):
+    """
+    Extracts seller city and state from the seller details section.
+    Returns a tuple (city, state) or (None, None) if not found.
+    """
+    try:
+        loc_el = detail_page.query_selector("div.city-state p")
+        if loc_el:
+            loc_text = loc_el.inner_text().strip()
+            # The text is like "Surat, Gujarat"
+            parts = [x.strip() for x in loc_text.split(',')]
+            if len(parts) == 2:
+                return parts[0], parts[1]
+            elif len(parts) == 1:
+                return parts[0], None
+        return None, None
+    except Exception as e:
+        print("Error extracting seller location:", e)
+        return None, None
+
+def extract_seller_address(detail_page):
+    """
+    Extracts the full seller address from the detail page, if available.
+    """
+    try:
+        address_el = detail_page.query_selector('div.ad-block p.title')
+        if address_el:
+            return address_el.inner_text().strip()
+    except Exception as e:
+        print("Error extracting seller address:", e)
+    return None
+
 def extract(config: dict) -> pd.DataFrame:
     """
     Extracts product data from a B2B site as defined in config.
@@ -16,7 +48,6 @@ def extract(config: dict) -> pd.DataFrame:
     selectors = config['selectors']
     base_url = config['base_url']
     categories = config['urls']['categories']
-    print(categories)
     max_pages = config.get('max_pages', 3)
     already_scraped_file = config.get('already_scraped_file', 'data/already_scraped.txt')
 
@@ -79,6 +110,14 @@ def extract(config: dict) -> pd.DataFrame:
                     time.sleep(random.uniform(3, 7))
                     specs = extract_spec_table(detail_page, selectors['spec_table'])
                     card_data.update(specs)
+
+                    # --- Extract seller location and address ---
+                    city, state = extract_seller_location(detail_page)
+                    card_data['Seller City'] = city
+                    card_data['Seller State'] = state
+
+                    card_data['Seller Address'] = extract_seller_address(detail_page)
+
                 except Exception as e:
                     print(f"Failed to scrape detail for {product_url}: {e}")
                 finally:
@@ -139,4 +178,7 @@ def extract(config: dict) -> pd.DataFrame:
     # Drop duplicate product links, if present
     if "Product Link" in df.columns:
         df = df.drop_duplicates(subset=["Product Link"])
+    output_dir = config.get("output_dir", "data")
+    os.makedirs(output_dir, exist_ok=True)
+    df.to_csv(os.path.join(output_dir, "extracted.csv"), index=False)    
     return df

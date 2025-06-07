@@ -1,5 +1,6 @@
 tradeindia:
   base_url: "https://www.tradeindia.com/"
+  site: tradeindia
   selectors:
     product_card: "div.card"
     product_name: "h2.card_title"
@@ -8,11 +9,14 @@ tradeindia:
     spec_table: "table.spec-table"
     next_button: "a.highlight_btn"
     popup_close: "button.popupClose"
+    # These two are optional, but allow for easy updates if the HTML changes:
+    seller_location: "div.city-state p"
+    seller_address: "div.ad-block p.title"
 
   urls:
     categories:
       - name: Water Storage Tanks
         endpoint: "search.html?keyword=water+storage+tanks"
-      # - name: Textile
-      #   endpoint: "search.html?keyword=sarees"
+      - name: Textile
+        endpoint: "search.html?keyword=sarees"
   already_scraped_file: data/already_scraped.txt

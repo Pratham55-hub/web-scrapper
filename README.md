@@ -39,6 +39,11 @@ web-scrapper/
 
 ⚡️ Quickstart
 
+> **Prerequisite:**  
+> Python 3.13 or higher is required.  
+> Download from [python.org](https://www.python.org/downloads/).
+> Jupyter Notebook or JupyterLab
+
 Clone the repository:
 ```bash
 git clone https://github.com/yourusername/web-scrapper.git
@@ -65,6 +70,59 @@ python main.py --config config/scrape_config.yaml --site tradeindia --max_pages 
 
 
 Output is saved in the data/ directory.
+
+## 📝 Next Steps: Data Analysis in Jupyter
+
+1. **Install Jupyter Notebook**
+
+    ```bash
+    pip install notebook
+    ```
+
+2. **Install Required Python Packages**
+
+    Make sure you have the following packages:
+
+    ```bash
+    pip install pandas numpy matplotlib seaborn duckdb
+    ```
+
+    If you plan to use additional packages (e.g., `wordcloud`):
+
+    ```bash
+    pip install wordcloud
+    ```
+
+3. **Prepare Your Data**
+
+    Place your cleaned data file (e.g., `scraped_data_transformed.parquet` ) in the same directory as your notebook, or update the notebook paths accordingly.
+
+4. **Launch Jupyter Notebook**
+
+    In your project folder, run:
+
+    ```bash
+    jupyter notebook
+    ```
+
+    Or, for JupyterLab:
+
+    ```bash
+    jupyter lab
+    ```
+
+    This will open Jupyter in your browser.
+
+5. **Open and Run the Notebook**
+
+    - Click on `analysis.ipynb` in the Jupyter dashboard.
+    - Run each cell sequentially (select a cell and press `Shift+Enter`), or use `Cell > Run All` for a complete run.
+
+6. **Export Results (Optional)**
+
+    Download the notebook as HTML or PDF from the menu:  
+    `File > Download as > HTML (.html)` or `PDF (.pdf)`  
+    (For PDF export, you may need to install TeX. See Jupyter documentation for details.)
 
 ⚙️ Configuration
 

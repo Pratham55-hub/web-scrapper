@@ -21,8 +21,10 @@ def main():
     site_config = config[args.site]
     site_config['max_pages'] = args.max_pages
     site_config['output_format'] = args.output_format
+    site_config['output_filename'] = f"{site_config['site']}_final.{site_config['output_format']}"
 
     print("=== EXTRACT ===")
+    # Unpack because extract() returns a tuple (df,)
     df_raw = extract(site_config)
     print(f"Extracted {len(df_raw)} rows.")
 

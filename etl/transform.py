@@ -1,5 +1,3 @@
-# etl/transform.py
-
 import pandas as pd
 import numpy as np
 import re
@@ -31,6 +29,33 @@ def transform(df: pd.DataFrame, config: Optional[Dict] = None) -> pd.DataFrame:
     for col in ['company_name', 'brand']:
         if col in df.columns:
             df[col] = df[col].fillna('Unknown')
+
+    # --- LOCATION TRANSFORMATION START ---
+    # If you have a column called 'seller_city_state' (e.g. 'Surat, Gujarat'), split it:
+    if 'seller_city' not in df.columns and 'seller_state' not in df.columns:
+        # Try to split a generic 'location' or similar column, or a single seller_location column
+        possible_location_columns = [c for c in df.columns if 'Seller_Address' in c]
+        for col in possible_location_columns:
+            # Only split if not already split
+            if col in df.columns and col not in ['seller_city', 'seller_state']:
+                city_state_split = df[col].str.split(',', n=1, expand=True)
+                if city_state_split.shape[1] == 2:
+                    df['seller_city'] = city_state_split[0].str.strip()
+                    df['seller_state'] = city_state_split[1].str.strip()
+    # If 'seller_city'/'seller_state' are present, just standardize them
+    for loc_col in ['seller_city', 'seller_state']:
+        if loc_col in df.columns:
+            df[loc_col] = df[loc_col].fillna('Unknown').str.title().str.strip()
+
+    # Clean/standardize seller address if present
+    if 'seller_address' in df.columns:
+        df['seller_address'] = (
+            df['seller_address']
+            .fillna('Unknown')
+            .str.replace('\s+', ' ', regex=True)
+            .str.strip()
+        )
+    # --- LOCATION TRANSFORMATION END ---
 
     # 5. Data type conversion (try numerics except 'price')
     for col in df.columns if hasattr(df, 'columns') and df is not None else []:
@@ -112,7 +137,5 @@ def transform(df: pd.DataFrame, config: Optional[Dict] = None) -> pd.DataFrame:
 
     # 13. Add a column: row number (for tracking)
     df['row_num'] = range(1, len(df) + 1)
-
-    # Optionally: config-driven post-processing here (custom for site/category)
 
     return df
