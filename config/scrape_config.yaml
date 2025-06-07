@@ -13,5 +13,6 @@ tradeindia:
     categories:
       - name: Water Storage Tanks
         endpoint: "search.html?keyword=water+storage+tanks"
-      - name: Textile
-        endpoint: "search.html?keyword=sarees"
+      # - name: Textile
+      #   endpoint: "search.html?keyword=sarees"
+  already_scraped_file: data/already_scraped.txt
