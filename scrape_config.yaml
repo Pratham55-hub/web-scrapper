@@ -1,0 +1,17 @@
+tradeindia:
+  base_url: "https://www.tradeindia.com/"
+  selectors:
+    product_card: "div.card"
+    product_name: "h2.card_title"
+    company_name: "p.coy-name"
+    product_link: "a[href*='/products/']"
+    spec_table: "table.spec-table"
+    next_button: "a.highlight_btn"
+    popup_close: "button.popupClose"
+
+  urls:
+    categories:
+      - name: Water Storage Tanks
+        endpoint: "search.html?keyword=water+storage+tanks"
+      - name: Textile
+        endpoint: "search.html?keyword=sarees"
